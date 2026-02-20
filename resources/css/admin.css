@@ -1,0 +1,1083 @@
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    transition: 0.3s ease;
+    margin: 0;
+    padding: 20px;
+}
+
+
+/* Dashboard Layout */
+.dashboard { display: flex; flex-direction: column; }
+
+.admin-wrapper {
+    display: flex;
+    height: 100vh;       
+    overflow: hidden;   
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 240px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease;
+}
+
+/* Scrollable content */
+.content {
+    margin-top: 25px;
+    padding: 20px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+/* Scrollable content */
+.content {
+    margin-top: 60px;     
+    padding: 20px;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    /* background: rgb(54, 52, 38); */
+    padding: 40px 100px;
+    border-radius: 8px;
+    color: black;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    transition: 0.3s ease;
+}
+
+/* Sidebar Base */
+.sidebar {
+    width: 240px;
+    /* background: #111827;
+    color: #fff; */
+    background: var(--bg-sidebar);
+    color: var(--text-light);
+    height: 100vh;
+    position: fixed;
+     top: 0; left: 0;
+     overflow-y: auto;
+     transition: width 0.3s ease;
+ }
+
+
+
+/* Header */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    justify-content: space-between;
+    border-bottom: 1px solid #1f2937;
+}
+
+.sidebar .logo {
+    font-size: 22px;
+}
+
+.sidebar .brand {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.sidebar.collapsed .text,
+.sidebar.collapsed .brand {
+    display: none;
+}
+
+/* Menu */
+.menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu li {
+    position: relative;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #d1d5db;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.menu a:hover {
+    background: #1f2937;
+    color: #fff;
+}
+
+.menu li.active > a {
+    background: #2563eb;
+    color: #fff;
+}
+
+/* Dropdown */
+.dropdown > a {
+    justify-content: space-between;
+}
+
+.dropdown .arrow {
+    margin-left: auto;
+    font-size: 12px;
+}
+
+.dropdown-menu {
+    display: none;
+    background: #1f2937;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu li a {
+    padding: 10px 30px;
+    color: #d1d5db;
+    font-size: 14px;
+}
+
+.dropdown-menu li a:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Collapsed Sidebar */
+.sidebar.collapsed .menu a {
+    justify-content: center;
+}
+
+.sidebar.collapsed .menu .text,
+.sidebar.collapsed .menu .arrow {
+    display: none;
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: 70px;
+}
+
+.sidebar.collapsed ~ .main-content .topbar {
+    left: 70px;
+}
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+/* Collapsed Sidebar */
+.admin-wrapper.collapsed .sidebar {
+    width: 70px;
+}
+
+.admin-wrapper.collapsed .sidebar .text,
+ .admin-wrapper.collapsed .sidebar .brand,
+  .admin-wrapper.collapsed .sidebar .arrow {
+     display: none; 
+    }
+
+/* When collapsed */
+.admin-wrapper.collapsed .main-content {
+    margin-left: 70px;
+}
+
+/* Navbar shift when collapsed */
+.admin-wrapper.collapsed .topbar {
+    left: 70px;
+}
+
+/* Active and Hover States */
+ .menu a {
+     display: flex;
+      align-items: center;
+       padding: 12px 15px;
+        color: #d1d5db;
+         text-decoration: none;
+          transition: background 0.3s ease, color 0.3s ease;
+         }
+ .menu a:hover {
+     background: #1f2937;
+      color: #fff;
+     }
+ .menu li.active > a {
+     background: #2563eb;
+      color: #fff;
+     }
+
+     
+/* order.index */
+h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Filter Links */
+div a {
+    text-decoration: none;
+    color: #3498db;
+    font-weight: 500;
+    margin: 0 8px;
+    transition: color 0.3s ease;
+}
+
+div a:hover {
+    color: #1abc9c;
+}
+
+/* Table Styling */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #2c3e50;
+    color: #fff;
+}
+
+thead th {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eaeaea;
+    transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: #f4f8fb;
+}
+
+tbody td {
+    padding: 12px;
+    font-size: 14px;
+}
+
+/* Action Links */
+tbody td a {
+    background: #3498db;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.3s ease;
+}
+
+tbody td a:hover {
+    background: #1abc9c;
+}
+
+/* Pagination */
+div .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+div .pagination li {
+    list-style: none;
+    margin: 0 5px;
+}
+
+div .pagination a,
+div .pagination span {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #3498db;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+div .pagination a:hover {
+    background: #3498db;
+    color: #fff;
+}
+
+
+/* Users */
+
+/* General Page Styling */
+
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/* Search Box */
+
+
+#bybtn{
+    width: 200px;
+}
+
+.mysearch{
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+.mysearch input[type="text"] {
+    width: 350px;
+}
+
+
+
+/* Table Styling */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: #2c3e50;
+    color: #fff;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.table tbody tr:hover {
+    background: #f9fcff;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.bg-danger {
+    background: #dc2626;
+}
+
+.bg-info {
+    background: #0ea5e9;
+}
+
+/* Action Links & Buttons */
+.table td a {
+    color: #2563eb;
+    text-decoration: none;
+    margin-right: 10px;
+    font-size: 13px;
+}
+
+.table td a:hover {
+    text-decoration: underline;
+}
+
+.table td button {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.3s ease;
+}
+
+.table td button:hover {
+    background: #b91c1c;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a, .pagination span {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #2563eb;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.pagination a:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        display: none;
+    }
+
+    tbody tr {
+        margin-bottom: 15px;
+        background: #fff;
+        border-radius: 6px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        padding: 10px;
+    }
+
+    tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+    }
+
+    tbody td:last-child {
+        border-bottom: none;
+    }
+
+    tbody td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #2c3e50;
+    }
+}
+
+
+/* users create, edit */
+
+.form-box {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 500px;
+}
+
+.form-box label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.form-box input,
+.form-box select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.btn-primary {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+/* books create */
+
+/* Form Container */
+.form-container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 25px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Headings */
+h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h3 {
+    margin-top: 30px;
+    color: #444;
+    border-left: 4px solid #0078D7;
+    padding-left: 10px;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin: 12px 0 6px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs, Selects, Textareas */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #0078D7;
+    outline: none;
+}
+
+/* Checkbox Labels */
+label input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
+/* Section Boxes */
+.section-box {
+    display: none; 
+    margin-top: 15px;
+    padding: 15px;
+    background: #f9fafc;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.section-box.active {
+    display: block; 
+}
+
+
+
+/* Horizontal Rule */
+hr {
+    margin: 25px 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+/* Submit Button */
+button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background: #0078D7;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background: #005a9e;
+}
+
+
+/* book page filters */
+
+/* app.css */
+.filter-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.filter-box input[type="text"],
+.filter-box select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.filter-box button.btn-primary {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-box button.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.filter-box a.btn-secondary {
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.filter-box a.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+
+/* authors create */
+/* app.css */
+.form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.form-box label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.form-box input[type="text"],
+.form-box textarea {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 94%;
+}
+
+.form-box textarea {
+  resize: vertical;
+}
+
+.form-box button.btn-primary {
+  padding: 10px 16px;
+  background-color: #007bff; 
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-box button.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+
+/* show auth */
+
+/* app.css */
+.author-detail {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.author-detail h2 {
+  margin-bottom: 12px;
+  font-size: 24px;
+  color: #333;
+}
+
+.author-detail .author-image {
+  display: block;
+  margin: 0 auto 16px;
+  border-radius: 4px;
+}
+
+.author-detail .author-bio {
+  margin-top: 20px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.author-detail .btn-primary {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.author-detail .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* quick actions */
+
+.quick-actions {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.quick-card {
+    background: #1f2937;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    min-width: 180px;
+    text-align: center;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.quick-card:hover {
+    background: #374151;
+}
+
+.status-badge {
+    background: #10b981;
+    padding: 5px 10px;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+}
+
+/* low stock alert and top selling books */
+.alert-box {
+    background: #fff3cd;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1e5a5;
+}
+
+.alert-item:last-child {
+    border-bottom: none;
+}
+
+.stock-count {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+
+.chart-alerts {
+    display: flex;
+    gap: 30px;          /* space between chart and alerts */
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+.chart-box {
+    flex: 1;            /* chart takes remaining space */
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+
+.chart-box canvas {
+  width: 100% !important; 
+  height: 100% !important;
+}
+
+.alerts {
+    width: 400px;       /* fixed width for alerts */
+}
+
+
+
+/* Navbar */
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-topbar);
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.topbar h2 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--text-main);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Notifications */
+.dropdown {
+    position: relative;
+}
+
+.bell {
+    position: relative;
+    display: inline-block;
+}
+
+.bell img {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+.bell .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    width: 250px;
+    list-style: none;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.dropdown-menu li {
+    margin-bottom: 8px;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: var(--text-main);
+    display: block;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.dropdown-menu li a:hover {
+    background: var(--bg-main);
+}
+
+.dropdown-menu .unread {
+    font-weight: bold;
+}
+
+.dropdown-menu .empty {
+    color: var(--text-main);
+    text-align: center;
+}
+
+.dropdown-menu .divider {
+    border-top: 1px solid #ddd;
+    margin: 8px 0;
+}
+
+.dropdown-menu .view-all {
+    text-align: center;
+    display: block;
+    color: #2563eb;
+}
+
+/* Username */
+.username {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Logout button */
+.logout-btn {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
+
+
+/* notifications page */
+
+/* Notifications Page Styling */
+.container h3 {
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.card {
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card.border-primary {
+    border: 2px solid #007bff;
+    background-color: #f8faff;
+}
+
+.card-body a {
+    font-size: 16px;
+    font-weight: 500;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.card-body a:hover {
+    text-decoration: underline;
+}
+
+.card-body small {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6c757d;
+}
+
+/* Empty state */
+p {
+    text-align: center;
+    font-size: 15px;
+    color: #888;
+    margin-top: 20px;
+}
+
+
+
+/* Light/Dark Mode Toggle */
+
+/* ================= LIGHT THEME ================= */
+:root {
+    --bg-main: #f4f6f9;
+    --bg-card: #ffffff;
+    --bg-topbar: #f4f4f4;
+    --bg-sidebar: #0f172a;
+    --text-main: #1f2937;
+    --text-light: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* ================= DARK THEME ================= */
+.dark-mode {
+    --bg-main: #111827;
+    --bg-card: #1f2937;
+    --bg-topbar: #111827;
+    --bg-sidebar: #0b1220;
+    --text-main: #f3f4f6;
+    --text-light: #ffffff;
+    --border-color: #374151;
+}
+
+.theme-btn {
+    border: none;
+    background: var(--bg-card);
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+}
