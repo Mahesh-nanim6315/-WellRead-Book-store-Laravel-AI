@@ -28,8 +28,8 @@ class OpenAIService implements LLMServiceInterface
 
     public function generate(string $prompt): string
     {
-        $response = Http::timeout(120)
-            ->retry(2, 500)
+        $response = Http::connectTimeout((int) config('ai.http_connect_timeout', 3))
+            ->timeout((int) config('ai.http_timeout', 8))
             ->withToken($this->apiKey)
             ->post($this->baseUrl . '/chat/completions', [
                 'model' => $this->chatModel,
@@ -50,8 +50,8 @@ class OpenAIService implements LLMServiceInterface
 
     public function embedding(string $text): array
     {
-        $response = Http::timeout(120)
-            ->retry(2, 500)
+        $response = Http::connectTimeout((int) config('ai.http_connect_timeout', 3))
+            ->timeout((int) config('ai.http_timeout', 8))
             ->withToken($this->apiKey)
             ->post($this->baseUrl . '/embeddings', [
                 'model' => $this->embeddingModel,

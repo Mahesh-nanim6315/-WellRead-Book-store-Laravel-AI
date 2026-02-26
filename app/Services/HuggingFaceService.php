@@ -33,8 +33,8 @@ class HuggingFaceService implements LLMServiceInterface
     public function generate(string $prompt): string
     {
         $response = Http::withToken($this->apiKey)
-            ->timeout(60)
-            ->retry(2, 500)
+            ->connectTimeout((int) config('ai.http_connect_timeout', 3))
+            ->timeout((int) config('ai.http_timeout', 8))
             ->post($this->routerBaseUrl . $this->chatModel, [
                 'inputs' => $prompt,
             ]);
@@ -57,8 +57,8 @@ class HuggingFaceService implements LLMServiceInterface
     public function embedding(string $text): array
     {
         $response = Http::withToken($this->apiKey)
-            ->timeout(60)
-            ->retry(2, 500)
+            ->connectTimeout((int) config('ai.http_connect_timeout', 3))
+            ->timeout((int) config('ai.http_timeout', 8))
             ->post($this->routerBaseUrl . $this->embeddingModel, [
                 'inputs' => $text,
             ]);

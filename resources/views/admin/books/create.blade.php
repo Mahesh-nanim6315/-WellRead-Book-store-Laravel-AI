@@ -46,6 +46,11 @@
 <label>Image URL</label>
 <input type="text" name="image" placeholder="https://..." required>
 
+<label style="margin-top: 10px;">
+    <input type="checkbox" name="is_premium" value="1">
+    Premium book (requires subscription)
+</label>
+
 <hr>
 
 

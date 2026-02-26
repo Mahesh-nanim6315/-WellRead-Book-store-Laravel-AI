@@ -11,6 +11,25 @@
 
     @include('common.header')
     @include('hero')
+    @include('categories.filter')
+
+    @if($recentlyViewedBooks->isNotEmpty())
+    @include('partials.carousel', [
+        'title' => 'Recently Viewed',
+        'books' => $recentlyViewedBooks
+        ])
+    @endif
+
+    @include('partials.carousel', [
+        'title' => 'Recently Added',
+        'books' => $recentBooks
+    ])
+
+    @include('partials.carousel', [
+        'title' => 'Top Trending',
+        'books' => $trendingBooks
+    ])
+
     @include('browse')
     @include('newsletter.index')
     @include('common.footer')

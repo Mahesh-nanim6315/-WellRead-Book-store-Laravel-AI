@@ -10,14 +10,14 @@ use App\Services\Contracts\LLMServiceInterface;
 class GenerateBookEmbeddings extends Command
 {
     protected $signature = 'books:generate-embeddings 
-                            {--provider=openai : LLM provider}
-                            {--force : Regenerate all embeddings}';
+                        {--provider= : LLM provider}
+                        {--force : Regenerate all embeddings}';
 
     protected $description = 'Generate AI embeddings for books';
 
     public function handle()
     {
-        $provider = $this->option('provider');
+        $provider = $this->option('provider') ?? config('ai.embedding_provider', config('ai.provider'));
 
         $this->info("Starting embedding generation using: {$provider}");
 
@@ -26,7 +26,11 @@ class GenerateBookEmbeddings extends Command
         $booksQuery = Book::with(['author', 'category', 'genre']);
 
         if (! $this->option('force')) {
-            $booksQuery->whereNull('embedding');
+            $booksQuery->where(function ($q) use ($provider) {
+                $q->whereNull('embedding')
+                    ->orWhereNull('embedding_provider')
+                    ->orWhere('embedding_provider', '!=', $provider);
+            });
         }
 
         $books = $booksQuery->get();
@@ -48,7 +52,7 @@ class GenerateBookEmbeddings extends Command
 
                 if (! empty($embedding)) {
                     $book->embedding = json_encode($embedding);
-                    $book->embedding_provider = $provider; // optional column (recommended)
+                    $book->embedding_provider = $provider;
                     $book->save();
                 } else {
                     $this->error("\nFailed embedding for: {$book->name}");

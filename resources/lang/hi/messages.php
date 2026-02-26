@@ -1,7 +1,23 @@
 <?php
 
 return [
+    'search_placeholder' => 'यहां खोजें',
+    'language' => 'भाषा',
+    'lang_en' => 'अंग्रेज़ी',
+    'lang_hi' => 'हिन्दी',
+    'lang_ta' => 'तमिल',
+    'lang_te' => 'तेलुगु',
     'home' => 'होम',
+    'ebooks' => 'ई-पुस्तकें',
+    'audiobooks' => 'ऑडियो बुक्स',
+    'paperback_books' => 'पेपरबैक पुस्तकें',
+    'top_books' => 'शीर्ष पुस्तकें',
+    'authors' => 'लेखक',
+    'my_library' => 'मेरी लाइब्रेरी',
+    'my_wishlist' => 'मेरी विशलिस्ट',
+    'my_profile' => 'मेरी प्रोफ़ाइल',
+    'subscriptions' => 'सदस्यताएं',
+    'my_paperback_orders' => 'मेरे पेपरबैक ऑर्डर',
     'cart' => 'कार्ट',
     'checkout' => 'चेकआउट',
     'login' => 'लॉगिन',

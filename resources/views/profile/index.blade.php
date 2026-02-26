@@ -1,6 +1,6 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-<div class="profile-header">
+@include('common.header')
+<div class="profile-header" style="margin-top: 65px;">
 
 <div class="profile-cover">
 
@@ -165,45 +165,26 @@
     @if($user->subscribed('default'))
         <p>You are subscribed to {{ ucfirst($user->plan) }} plan.</p>
 
-        @if(auth()->user()->subscribed('default'))
-
-        @if(auth()->user()->subscription('default')->onGracePeriod())
-
+        @if($user->subscription('default')->onGracePeriod())
             <form method="POST" action="{{ route('subscription.resume') }}">
                 @csrf
-                <button class="resume-btn">
-                    Resume Subscription
-                </button>
+                <button class="resume-btn">Resume Subscription</button>
             </form>
 
             <p>
-                Your subscription will end on 
-                {{ auth()->user()->subscription('default')->ends_at->format('M d, Y') }}
+                Your subscription will end on
+                {{ $user->subscription('default')->ends_at->format('M d, Y') }}
             </p>
-
         @else
+            <form method="POST" action="{{ route('subscription.cancel') }}">
+                @csrf
+                <button class="cancel-btn">Cancel Subscription</button>
+            </form>
+        @endif
 
-        <form method="POST" action="{{ route('subscription.cancel') }}">
-            @csrf
-            <button class="cancel-btn">
-                Cancel Subscription
-            </button>
-        </form>
-
-    @endif
-
-@endif
-
-
-        <form method="POST" action="{{ route('subscription.cancel') }}">
-            @csrf
-            <button class="cancel-btn">Cancel Subscription</button>
-        </form>
-
+        <a href="{{ route('plans.index') }}" class="upgrade-btn">Change Plan (Upgrade / Downgrade)</a>
     @else
-        <a href="{{ route('plans.index') }}" class="upgrade-btn">
-            Upgrade to Premium
-        </a>
+        <a href="{{ route('plans.index') }}" class="upgrade-btn">Upgrade to Premium</a>
     @endif
 
 </div>
@@ -255,6 +236,8 @@
     </div>
 </div>
 
+@include('common.footer')
+
 <script>
 document.getElementById('coverInput').addEventListener('change', function() {
     this.form.submit();
@@ -286,3 +269,6 @@ document.getElementById('avatarInput').addEventListener('change', function() {
     this.form.submit();
 });
 </script>
+
+
+

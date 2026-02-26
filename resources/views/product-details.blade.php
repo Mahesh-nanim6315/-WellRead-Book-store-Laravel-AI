@@ -64,6 +64,11 @@
     <div class="product-right">
         <div class="product-header">
             <h1 class="product-title">{{ $book->name }}</h1>
+            @if($book->is_premium)
+                <p style="display:inline-flex; align-items:center; gap:8px; background:#fef3c7; color:#b45309; font-weight:600; padding:6px 12px; border-radius:999px;">
+                    Premium book - Active subscription required
+                </p>
+            @endif
             
             <div class="product-meta">
                 <div class="meta-item">
@@ -270,6 +275,21 @@
         @endauth
     </div>
 </div>
+
+@if($recommendedBooks->isNotEmpty())
+    <section class="recommended-section">
+        <h2 style="text-align: center;">Recommended For You</h2>
+
+        <div class="book-grid">
+            @foreach($recommendedBooks as $recBook)
+                <a href="{{ route('books.show', $recBook->id) }}" class="book-card">
+                    <img src="{{ $recBook->image }}" alt="">
+                    <p>{{ $recBook->title }}</p>
+                </a>
+            @endforeach
+        </div>
+    </section>
+@endif
 
 @include('common.footer')
 

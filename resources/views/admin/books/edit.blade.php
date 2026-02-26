@@ -62,6 +62,12 @@
     <label>Image URL</label>
     <input type="url" name="image" value="{{ old('image', $book->image) }}" required>
 
+    <label style="margin-top: 10px;">
+        <input type="checkbox" name="is_premium" value="1"
+            {{ old('is_premium', $book->is_premium) ? 'checked' : '' }}>
+        Premium book (requires subscription)
+    </label>
+
     <div style="margin:10px 0;">
         <strong>Preview:</strong><br>
         <img src="{{ $book->image }}" width="120">

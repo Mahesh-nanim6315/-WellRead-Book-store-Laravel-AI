@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'search_placeholder' => 'இங்கே தேடவும்',
+    'language' => 'மொழி',
+    'lang_en' => 'ஆங்கிலம்',
+    'lang_hi' => 'ஹிந்தி',
+    'lang_ta' => 'தமிழ்',
+    'lang_te' => 'தெலுங்கு',
+    'home' => 'முகப்பு',
+    'ebooks' => 'மின்புத்தகங்கள்',
+    'audiobooks' => 'ஒலிப்புத்தகங்கள்',
+    'paperback_books' => 'பேப்பர்பேக் புத்தகங்கள்',
+    'top_books' => 'சிறந்த புத்தகங்கள்',
+    'authors' => 'ஆசிரியர்கள்',
+    'my_library' => 'என் நூலகம்',
+    'my_wishlist' => 'என் விருப்பப் பட்டியல்',
+    'my_profile' => 'என் சுயவிவரம்',
+    'subscriptions' => 'சந்தாக்கள்',
+    'my_paperback_orders' => 'என் பேப்பர்பேக் ஆர்டர்கள்',
+    'cart' => 'கார்ட்',
+    'checkout' => 'செக்அவுட்',
+    'login' => 'உள்நுழை',
+    'logout' => 'வெளியேறு',
+    'order_summary' => 'ஆர்டர் சுருக்கம்',
+    'total' => 'மொத்தம்',
+];

@@ -31,10 +31,18 @@ class Book extends Model
     'paperback_price',
     'paperback_pages',
     'stock',
+    'is_premium',
 
     'price',
     'embedding',
 ];
+
+    protected $casts = [
+        'has_ebook' => 'boolean',
+        'has_audio' => 'boolean',
+        'has_paperback' => 'boolean',
+        'is_premium' => 'boolean',
+    ];
 
 
     // keep this as-is

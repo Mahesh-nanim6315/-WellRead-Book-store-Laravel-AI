@@ -69,9 +69,19 @@ class BookControllers extends Controller
             'genre_id' => 'required|exists:genres,id',
             'image' => 'required|url',
             'price' => 'required|numeric',
+            'is_premium' => 'nullable|boolean',
+            'has_ebook' => 'nullable|boolean',
+            'has_audio' => 'nullable|boolean',
+            'has_paperback' => 'nullable|boolean',
         ]);
 
-        Book::create($request->all());
+        $data = $request->all();
+        $data['is_premium'] = $request->boolean('is_premium');
+        $data['has_ebook'] = $request->boolean('has_ebook');
+        $data['has_audio'] = $request->boolean('has_audio');
+        $data['has_paperback'] = $request->boolean('has_paperback');
+
+        Book::create($data);
 
         return redirect()->route('admin.books.index')
             ->with('success','Book created successfully');
@@ -104,9 +114,19 @@ class BookControllers extends Controller
             'genre_id' => 'required|exists:genres,id',
             'image' => 'required|url',
             'price' => 'required|numeric',
+            'is_premium' => 'nullable|boolean',
+            'has_ebook' => 'nullable|boolean',
+            'has_audio' => 'nullable|boolean',
+            'has_paperback' => 'nullable|boolean',
         ]);
 
-        $book->update($request->all());
+        $data = $request->all();
+        $data['is_premium'] = $request->boolean('is_premium');
+        $data['has_ebook'] = $request->boolean('has_ebook');
+        $data['has_audio'] = $request->boolean('has_audio');
+        $data['has_paperback'] = $request->boolean('has_paperback');
+
+        $book->update($data);
 
         return redirect()->route('admin.books.index')
             ->with('success','Book updated successfully');

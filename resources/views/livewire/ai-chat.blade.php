@@ -9,13 +9,17 @@
     <div x-show="open" x-transition class="chat-window">
         <!-- Header -->
         <div class="chat-header">
-            <span>AI Book Assistant</span>
+            <span>AI Agent</span>
 
              <select wire:model.live="model" class="model-select">
                 @foreach($availableModels as $key => $label)
                     <option value="{{ $key }}">{{ $label }}</option>
                 @endforeach
             </select>
+
+            <button wire:click="newChat" type="button" class="new-chat-btn" title="Start new chat">
+                New Chat
+            </button>
 
             <button @click="open = false" class="close-btn" aria-label="Close chat">&times;</button>
         </div>
@@ -25,6 +29,9 @@
             @foreach($chatHistory ?? [] as $chat)
                 <div class="chat-message">
                     <strong>{{ $chat['role'] }}:</strong>
+                    @if(($chat['role'] ?? '') === 'assistant' && !empty($chat['source']))
+                        <span class="chat-source">[source: {{ $chat['source'] }}]</span>
+                    @endif
                     {{ $chat['text'] }}
                 </div>
             @endforeach

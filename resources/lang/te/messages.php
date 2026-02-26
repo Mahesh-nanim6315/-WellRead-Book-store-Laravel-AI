@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'search_placeholder' => 'ఇక్కడ శోధించండి',
+    'language' => 'భాష',
+    'lang_en' => 'ఆంగ్లం',
+    'lang_hi' => 'హిందీ',
+    'lang_ta' => 'తమిళం',
+    'lang_te' => 'తెలుగు',
+    'home' => 'హోమ్',
+    'ebooks' => 'ఈ-పుస్తకాలు',
+    'audiobooks' => 'ఆడియో పుస్తకాలు',
+    'paperback_books' => 'పేపర్‌బ్యాక్ పుస్తకాలు',
+    'top_books' => 'టాప్ పుస్తకాలు',
+    'authors' => 'రచయితలు',
+    'my_library' => 'నా లైబ్రరీ',
+    'my_wishlist' => 'నా విష్‌లిస్ట్',
+    'my_profile' => 'నా ప్రొఫైల్',
+    'subscriptions' => 'సబ్‌స్క్రిప్షన్లు',
+    'my_paperback_orders' => 'నా పేపర్‌బ్యాక్ ఆర్డర్లు',
+    'cart' => 'కార్ట్',
+    'checkout' => 'చెకౌట్',
+    'login' => 'లాగిన్',
+    'logout' => 'లాగౌట్',
+    'order_summary' => 'ఆర్డర్ సారాంశం',
+    'total' => 'మొత్తం',
+];

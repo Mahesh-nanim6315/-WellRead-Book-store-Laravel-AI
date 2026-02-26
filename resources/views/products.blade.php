@@ -4,7 +4,7 @@
     <title>Products</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="products-page">
 
 @include('common.header')
 
@@ -12,7 +12,6 @@
 
 <div class="container">
 
-   
     <div class="filter-box">
         <form method="GET" action="{{ route('products.home') }}">
 
@@ -93,19 +92,24 @@
 
                     @if($book->image)
                      <a href="{{ route('books.show', $book->id) }}">
-                        <img src="{{ $book->image }}" width="220" height="200">
+                        <img src="{{ $book->image }}" alt="{{ $book->name }}" class="book-image">
+                         
                     </a>
                     @endif
 
                     <div class="product-header">
-                        <h3>{{ $book->name }}</h3>
+                            <h3>{{ $book->name }}</h3>
+                        @if($book->is_premium)
+                            <span style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 3px 8px; border-radius: 999px;">
+                                Premium
+                            </span>
+                        @endif
                         <button type="button" class="wishlist-btn" data-id="{{ $book->id }}">
                             ❤️
                         </button>
+                        <!-- <p>₹{{ $book->price }}</p> -->
                     </div>
 
-                    <strong>₹{{ $book->price }}</strong>
-                    <br><br>
                   <div>
                 
                   </div>

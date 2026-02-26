@@ -52,6 +52,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'plan_expires_at' => 'datetime',
         ];
     }
 
@@ -87,9 +88,25 @@ public function isStaff()
 
 public function hasActiveSubscription()
 {
-    return $this->plan !== 'free' &&
-           $this->plan_expires_at &&
-           now()->lt($this->plan_expires_at);
+    return $this->subscribed('default') || (
+        $this->plan !== 'free' &&
+        $this->plan_expires_at &&
+        now()->lt($this->plan_expires_at)
+    );
+}
+
+public function canAccessBook(Book $book): bool
+{
+    if (! $book->is_premium) {
+        return true;
+    }
+
+    return $this->hasActiveSubscription();
+}
+
+public function chatSessions()
+{
+    return $this->hasMany(ChatSession::class);
 }
 
 

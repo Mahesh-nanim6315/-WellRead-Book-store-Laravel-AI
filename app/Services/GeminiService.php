@@ -36,8 +36,8 @@ class GeminiService implements LLMServiceInterface
         $response = Http::acceptJson()
             ->asJson()
             ->withHeader('X-goog-api-key', $this->apiKey)
-            ->timeout(30)
-            ->retry(2, 300)
+            ->connectTimeout((int) config('ai.http_connect_timeout', 3))
+            ->timeout((int) config('ai.http_timeout', 8))
             ->post(
                 $this->baseUrl . $this->embeddingModel . ':embedContent',
                 [
@@ -69,8 +69,8 @@ class GeminiService implements LLMServiceInterface
         $response = Http::acceptJson()
             ->asJson()
             ->withHeader('X-goog-api-key', $this->apiKey)
-            ->timeout(30)
-            ->retry(2, 300)
+            ->connectTimeout((int) config('ai.http_connect_timeout', 3))
+            ->timeout((int) config('ai.http_timeout', 8))
             ->post(
                 $this->baseUrl . $this->textModel . ':generateContent',
                 [

@@ -13,12 +13,14 @@
         <button id="yearlyBtn">Yearly</button>
     </div>
 
-
-
     <div class="plans-grid">
         @foreach($plans as $plan)
+            @php
+                $planKey = strtolower(explode(' ', $plan['name'])[0]);
+                $isCurrentPlan = auth()->check() && auth()->user()->plan === $planKey;
+            @endphp
+
             <div class="plan-card {{ isset($plan['popular']) ? 'popular' : '' }}">
-                
                 @if(isset($plan['popular']))
                     <div class="popular-badge">Most Popular</div>
                 @endif
@@ -26,40 +28,43 @@
                 <h2>{{ $plan['name'] }}</h2>
 
                 <div class="price">
-                        <span class="amount" 
-                            data-monthly="{{ $plan['monthly'] }}" 
-                            data-yearly="{{ $plan['yearly'] }}">
-                            ${{ $plan['monthly'] }}
-                        </span>
-                        <small>/month</small>
+                    <span class="amount" data-monthly="{{ $plan['monthly'] }}" data-yearly="{{ $plan['yearly'] }}">
+                        ${{ $plan['monthly'] }}
+                    </span>
+                    <small>/month</small>
                 </div>
 
-                
                 <ul>
                     @foreach($plan['features'] as $feature)
-                        <li>✔ {{ $feature }}</li>
+                        <li>&#10004; {{ $feature }}</li>
                     @endforeach
                 </ul>
 
-     
-                @if(auth()->check() && auth()->user()->plan === strtolower(explode(' ', $plan['name'])[0]))
-                    <div class="current-plan-badge">
-                        Current Plan
-                    </div>
+                @if($isCurrentPlan)
+                    <div class="current-plan-badge">Current Plan</div>
                 @endif
 
-           <form method="POST" action="{{ route('subscription.checkout') }}">
-                @csrf
-                <input type="hidden" name="plan" value="{{ strtolower(explode(' ', $plan['name'])[0]) }}">
-                <input type="hidden" name="billing_cycle" id="billing_cycle_{{ $loop->index }}" value="monthly">
+                <form method="POST" action="{{ route('subscription.checkout') }}">
+                    @csrf
+                    <input type="hidden" name="plan" value="{{ $planKey }}">
+                    <input type="hidden" name="billing_cycle" value="monthly">
 
-                <button type="submit" class="subscribe-btn">
-                    Choose Plan
-                </button>
-            </form>
+                    @php
+                        $buttonText = 'Choose Plan';
 
+                        if ($isCurrentPlan) {
+                            $buttonText = 'Current Plan';
+                        } elseif (auth()->check() && $planKey === 'free' && auth()->user()->plan !== 'free') {
+                            $buttonText = 'Downgrade to Free';
+                        } elseif (auth()->check() && auth()->user()->plan === 'premium' && $planKey === 'ultimate') {
+                            $buttonText = 'Upgrade to Ultimate';
+                        }
+                    @endphp
 
-
+                    <button type="submit" class="subscribe-btn" {{ $isCurrentPlan ? 'disabled' : '' }}>
+                        {{ $buttonText }}
+                    </button>
+                </form>
             </div>
         @endforeach
     </div>
@@ -71,10 +76,7 @@
     const yearlyBtn = document.getElementById('yearlyBtn');
     const prices = document.querySelectorAll('.amount');
 
-    let currentBilling = 'monthly';
-
     monthlyBtn.onclick = function() {
-        currentBilling = 'monthly';
         monthlyBtn.classList.add('active');
         yearlyBtn.classList.remove('active');
 
@@ -88,7 +90,6 @@
     };
 
     yearlyBtn.onclick = function() {
-        currentBilling = 'yearly';
         yearlyBtn.classList.add('active');
         monthlyBtn.classList.remove('active');
 
@@ -100,6 +101,4 @@
             i.value = 'yearly';
         });
     };
-
 </script>
-

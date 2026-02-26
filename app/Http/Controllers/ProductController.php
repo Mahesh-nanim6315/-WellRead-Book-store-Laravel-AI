@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\Author;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Review;
 
 class ProductController extends Controller
 {
@@ -57,8 +59,27 @@ public function home(Request $request)
 
     public function show($id)
     {
-        $book = Book::findOrFail($id);
-        return view('product-details', compact('book'));
+        $book = Book::with('reviews.user')->findOrFail($id);
+
+        if ($book->is_premium && (!Auth::check() || !Auth::user()->canAccessBook($book))) {
+            return redirect()->route('plans.index')
+                ->with('error', 'This book requires a premium subscription.');
+        }
+
+        $reviews = Review::where('book_id', $book->id)
+            ->when(Auth::check() && Auth::user()->role !== 'admin', function ($query) {
+                $query->where(function ($q) {
+                    $q->where('is_approved', true)
+                        ->orWhere('user_id', Auth::id());
+                });
+            })
+            ->when(!Auth::check(), function ($query) {
+                $query->where('is_approved', true);
+            })
+            ->latest()
+            ->get();
+
+        return view('product-details', compact('book', 'reviews'));
     }
 
     // Show Add Book Form
@@ -80,7 +101,10 @@ public function audiobooks()
         'Fantasy',
         'Family',
         'Romance',
-        
+        'Humor',
+        'Horror',
+        'Historical'
+
     ])->get()->keyBy('name');
 
     $drama = Book::where('category_id', $categories['Drama']->id)
@@ -110,13 +134,27 @@ public function audiobooks()
                    ->where('has_audio', true)
                    ->latest()->take(10)->get();
 
+    $humor = Book::where('category_id', $categories['Humor']->id)
+                   ->where('has_audio', true)
+                   ->latest()->take(10)->get();
+
+    $horror = Book::where('category_id', $categories['Horror']->id)
+                   ->where('has_audio', true)
+                   ->latest()->take(10)->get();
+    $historical = Book::where('category_id', $categories['Historical']->id)
+                   ->where('has_audio', true)
+                   ->latest()->take(10)->get();
+
     return view('ebkcursol', compact(
         'drama',
         'thriller',
         'social',
         'family',
         'romance',
-        'categories'
+        'categories',
+        'humor',
+        'horror',
+        'historical',   
     ));
 }
 
@@ -128,7 +166,10 @@ public function ebooks()
         'Thriller',
         'Social',
         'Family',
-        'Romance'
+        'Romance',
+         'Humor',
+         'Horror',
+         'Historical'
     ])->get()->keyBy('name');
 
     $drama = Book::where('category_id', $categories['Drama']->id)
@@ -150,6 +191,16 @@ public function ebooks()
     $romance = Book::where('category_id', $categories['Romance']->id)
                    ->where('has_ebook', true)
                    ->latest()->take(10)->get();
+    $humor = Book::where('category_id', $categories['Humor']->id)
+                   ->where('has_ebook', true)
+                   ->latest()->take(10)->get();
+    $horror = Book::where('category_id', $categories['Horror']->id)
+                   ->where('has_ebook', true)
+                     ->latest()->take(10)->get();
+    $historical = Book::where('category_id', $categories['Historical']->id)
+                   ->where('has_ebook', true)
+                     ->latest()->take(10)->get();
+
 
     return view('ebkcursol', compact(
         'drama',
@@ -157,7 +208,10 @@ public function ebooks()
         'social',
         'family',
         'romance',
-        'categories'
+        'categories',
+        'humor',
+        'horror',
+        'historical'
     ));
 }
 
@@ -169,7 +223,10 @@ public function paperbacks()
         'Thriller',
         'Social',
         'Family',
-        'Romance'
+        'Romance',
+         'Humor',
+        'Horror',
+        'Historical'
     ])->get()->keyBy('name');
 
     $drama = Book::where('category_id', $categories['Drama']->id)
@@ -192,13 +249,26 @@ public function paperbacks()
                    ->where('has_paperback', true)
                    ->latest()->take(10)->get();
 
+    $humor = Book::where('category_id', $categories['Humor']->id)
+                   ->where('has_paperback', true)
+                     ->latest()->take(10)->get();
+    $horror = Book::where('category_id', $categories['Horror']->id)
+                   ->where('has_paperback', true)
+                     ->latest()->take(10)->get();
+    $historical = Book::where('category_id', $categories['Historical']->id)
+                   ->where('has_paperback', true)
+                     ->latest()->take(10)->get();
+
     return view('ebkcursol', compact(
         'drama',
         'thriller',
         'social',
         'family',
         'romance',
-        'categories'
+        'categories',
+        'humor',
+        'horror',
+        'historical'
     ));
 }
 

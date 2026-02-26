@@ -33,5 +33,23 @@
     'category' => $categories['Romance']
 ])
 
+@include('partials.carousel', [
+    'title' => 'Humor',
+    'books' => $humor,
+    'category' => $categories['Humor']
+])
+
+@include('partials.carousel', [
+    'title' => 'Horror',
+    'books' => $horror,
+    'category' => $categories['Horror']
+])
+
+@include('partials.carousel', [
+    'title' => 'Historical',
+    'books' => $historical,
+    'category' => $categories['Historical']
+])
+
 </div>
 @include('common.footer')

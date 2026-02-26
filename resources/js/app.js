@@ -1,15 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".carousel-track").forEach(track => {
+        const isInfinite = track.dataset.infinite === 'true';
 
-        // Move to middle (after first render)
-        const half = track.scrollWidth / 2;
-        track.scrollLeft = half;
+        if (isInfinite) {
+            // Infinite mode requires duplicated items in the track.
+            track.scrollLeft = track.scrollWidth / 2;
 
-        // Infinite loop on manual scroll
-        track.addEventListener("scroll", () => {
-            handleInfinite(track);
-        });
+            track.addEventListener("scroll", () => {
+                handleInfinite(track);
+            });
+        }
     });
 
     // Search functionality
@@ -65,6 +66,10 @@ window.slideLeft = function (btn) {
 };
 
 function handleInfinite(track) {
+    if (track.scrollWidth <= track.clientWidth) {
+        return;
+    }
+
     const half = track.scrollWidth / 2;
 
     // Right edge → jump to middle

@@ -64,10 +64,11 @@ return [
         'embedding_model' => env('HUGGINGFACE_EMBEDDING_MODEL', 'sentence-transformers/all-MiniLM-L6-v2'),
     ],
 
+
     'ollama' => [
-        'base_url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
-        'model' => env('OLLAMA_MODEL', 'mistral'),
-    ],
+    'base_url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
+    'model' => env('OLLAMA_MODEL', 'mistral'),
+    'num_predict' => (int) env('OLLAMA_NUM_PREDICT', 120),
+],
 
 ];
-

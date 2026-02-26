@@ -22,6 +22,11 @@
                         <img src="{{ $book->image }}" width="200" height="200">
                         <p class="card-title">{{ $book->name }}</p>
                     </a>
+                    @if($book->is_premium)
+                        <span style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 3px 8px; border-radius: 999px;">
+                            Premium
+                        </span>
+                    @endif
                 </div>
             @endforeach
 

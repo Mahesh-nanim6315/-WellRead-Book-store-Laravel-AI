@@ -45,6 +45,7 @@ Route::post('/subscription/checkout',
 
 Route::get('/subscription/success', 
     [SubscriptionController::class, 'success'])
+    ->middleware('auth')
     ->name('subscription.success');
 
     Route::post('/subscription/cancel', 
@@ -80,8 +81,6 @@ Route::post('/newsletter', [NewsletterController::class, 'subscribe'])
     ->name('newsletter.subscribe');
 
 
-
-
 /* ================= BOOK DETAILS ================= */
 Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
 
@@ -93,6 +92,8 @@ Route::get('/paperbacks', [BookController::class, 'paperbacks'])->name('paperbac
 Route::get('/ebooks/category/{category:slug}', [BookController::class, 'categoryBooks'])
      ->name('category.books');
 
+Route::get('/categories', [BookController::class, 'categoriesIndex'])
+    ->name('categories.index');
 
 
 
@@ -335,37 +336,6 @@ Route::middleware(['auth','admin'])
 });
 
 
-// Route::middleware(['auth','role:admin,manager'])
-//     ->prefix('admin')
-//     ->name('admin.')
-//     ->group(function () {
-//     Route::resource('books', BookControllers::class)
-//         ->only(['index', 'show'])
-//         ->middleware('permission:books.view');
-//     Route::resource('books', BookControllers::class)
-//         ->only(['create', 'store'])
-//         ->middleware('permission:books.create');
-//     Route::resource('books', BookControllers::class)
-//         ->only(['edit', 'update'])
-//         ->middleware('permission:books.edit');
-//     Route::resource('books', BookControllers::class)
-//         ->only(['destroy'])
-//         ->middleware('permission:books.delete');
-
-//     Route::resource('authors', AuthorControllers::class)
-//         ->only(['index', 'show'])
-//         ->middleware('permission:authors.view');
-//     Route::resource('authors', AuthorControllers::class)
-//         ->only(['create', 'store'])
-//         ->middleware('permission:authors.create');
-//     Route::resource('authors', AuthorControllers::class)
-//         ->only(['edit', 'update'])
-//         ->middleware('permission:authors.edit');
-//     Route::resource('authors', AuthorControllers::class)
-//         ->only(['destroy'])
-//         ->middleware('permission:authors.delete');
-// });
-
 Route::middleware(['auth','role:admin,manager'])
     ->prefix('admin')
     ->name('admin.')
@@ -456,12 +426,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
 Route::get('/profile', [ProfileController::class, 'index'])
     ->middleware('auth')
     ->name('profile');
@@ -484,3 +448,4 @@ Route::get('/profile', [ProfileController::class, 'index'])
 
 
 require __DIR__.'/auth.php';
+

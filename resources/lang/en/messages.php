@@ -1,7 +1,23 @@
 <?php
 
 return [
+    'search_placeholder' => 'Search here',
+    'language' => 'Language',
+    'lang_en' => 'English',
+    'lang_hi' => 'Hindi',
+    'lang_ta' => 'Tamil',
+    'lang_te' => 'Telugu',
     'home' => 'Home',
+    'ebooks' => 'E-Books',
+    'audiobooks' => 'Audio Books',
+    'paperback_books' => 'Paperback Books',
+    'top_books' => 'Top Books',
+    'authors' => 'Authors',
+    'my_library' => 'My Library',
+    'my_wishlist' => 'My Wishlist',
+    'my_profile' => 'My Profile',
+    'subscriptions' => 'Subscriptions',
+    'my_paperback_orders' => 'My Paperback Orders',
     'cart' => 'Cart',
     'checkout' => 'Checkout',
     'login' => 'Login',
