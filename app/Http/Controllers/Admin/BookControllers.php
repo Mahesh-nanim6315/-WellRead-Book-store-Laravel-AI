@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Author;
 use App\Models\Category;
 use App\Models\Genre;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class BookControllers extends Controller
@@ -34,7 +35,7 @@ class BookControllers extends Controller
         $query->where('genre_id', $request->genre);
     }
 
-    $books = $query->latest()->paginate(10)->withQueryString();
+    $books = $query->latest()->paginate(Setting::get('books_per_page', 12))->withQueryString();
 
     $authors = Author::all();
     $categories = Category::all();

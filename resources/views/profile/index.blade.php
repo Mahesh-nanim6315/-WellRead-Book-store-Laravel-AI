@@ -181,10 +181,21 @@
                 <button class="cancel-btn">Cancel Subscription</button>
             </form>
         @endif
-
-        <a href="{{ route('plans.index') }}" class="upgrade-btn">Change Plan (Upgrade / Downgrade)</a>
+        @if(\App\Models\Setting::get('subscriptions_enabled', 1))
+            <a href="{{ route('plans.index') }}" class="upgrade-btn">Change Plan (Upgrade / Downgrade)</a>
+        @else
+            <p style="margin-top: 8px; color: #b45309;">
+                Plan changes are temporarily disabled.
+            </p>
+        @endif
     @else
-        <a href="{{ route('plans.index') }}" class="upgrade-btn">Upgrade to Premium</a>
+        @if(\App\Models\Setting::get('subscriptions_enabled', 1))
+            <a href="{{ route('plans.index') }}" class="upgrade-btn">Upgrade to Premium</a>
+        @else
+            <p style="margin-top: 8px; color: #b45309;">
+                Subscriptions are currently disabled.
+            </p>
+        @endif
     @endif
 
 </div>

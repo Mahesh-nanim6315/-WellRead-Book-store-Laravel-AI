@@ -6,6 +6,11 @@
     <div class="plans-header">
         <h1>Choose Your Reading Plan</h1>
         <p>Unlock unlimited stories and immersive audiobooks.</p>
+        @if(!$subscriptionsEnabled)
+            <p style="margin-top: 8px; color: #b45309; background: #fef3c7; padding: 8px 12px; border-radius: 8px;">
+                Subscriptions are currently disabled. Existing subscribers keep access, but new upgrades are paused.
+            </p>
+        @endif
     </div>
 
     <div class="billing-toggle">
@@ -44,27 +49,33 @@
                     <div class="current-plan-badge">Current Plan</div>
                 @endif
 
-                <form method="POST" action="{{ route('subscription.checkout') }}">
-                    @csrf
-                    <input type="hidden" name="plan" value="{{ $planKey }}">
-                    <input type="hidden" name="billing_cycle" value="monthly">
-
-                    @php
-                        $buttonText = 'Choose Plan';
-
-                        if ($isCurrentPlan) {
-                            $buttonText = 'Current Plan';
-                        } elseif (auth()->check() && $planKey === 'free' && auth()->user()->plan !== 'free') {
-                            $buttonText = 'Downgrade to Free';
-                        } elseif (auth()->check() && auth()->user()->plan === 'premium' && $planKey === 'ultimate') {
-                            $buttonText = 'Upgrade to Ultimate';
-                        }
-                    @endphp
-
-                    <button type="submit" class="subscribe-btn" {{ $isCurrentPlan ? 'disabled' : '' }}>
-                        {{ $buttonText }}
+                @if(!$subscriptionsEnabled && $planKey !== 'free')
+                    <button type="button" class="subscribe-btn" disabled>
+                        Subscriptions Disabled
                     </button>
-                </form>
+                @else
+                    <form method="POST" action="{{ route('subscription.checkout') }}">
+                        @csrf
+                        <input type="hidden" name="plan" value="{{ $planKey }}">
+                        <input type="hidden" name="billing_cycle" value="monthly">
+
+                        @php
+                            $buttonText = 'Choose Plan';
+
+                            if ($isCurrentPlan) {
+                                $buttonText = 'Current Plan';
+                            } elseif (auth()->check() && $planKey === 'free' && auth()->user()->plan !== 'free') {
+                                $buttonText = 'Downgrade to Free';
+                            } elseif (auth()->check() && auth()->user()->plan === 'premium' && $planKey === 'ultimate') {
+                                $buttonText = 'Upgrade to Ultimate';
+                            }
+                        @endphp
+
+                        <button type="submit" class="subscribe-btn" {{ $isCurrentPlan ? 'disabled' : '' }}>
+                            {{ $buttonText }}
+                        </button>
+                    </form>
+                @endif
             </div>
         @endforeach
     </div>

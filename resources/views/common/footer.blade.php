@@ -1,70 +1,69 @@
-@vite('resources/css/app.css')
+@vite(['resources/css/footer.css', 'resources/js/app.js'])
 
 <footer class="footer">
-  <div class="footer-container">
+    <div class="footer-container">
 
-    <div class="footer-left">
-       <ul>
-         <li>Home</li>
-         <li>Products</li>
-         <li><a href="{{ url('/about') }}">About Us</a></li>
-         <li>Contact Us</li>
-         <li>Privacy Policy</li>
-        </ul>
-        <ul>
-            <li>Terms of Service</li>
-            <li><a href="{{ route('faq.index') }}">FAQ</a></li>
-            <li>Support</li>
-            <li>Blog</li>
-            <li>Careers</li>
-        </ul>
-        <ul>
-            <li>Sitemap</li>
-            <li>Press</li>
-            <li>Developers</li>
-            <li>Affiliates</li>
-            <li>Newsletter</li>
-        </ul>
-        <ul>
-            <li>Events</li>
-            <li>Partners</li>
-            <li>Testimonials</li>
-            <li>Resources</li>
-            <li>Community</li>
-        </ul>
-           <ul>
-            <li>Terms of Service</li>
-            <li>FAQ</li>
-            <li>Support</li>
-            <li>Blog</li>
-            <li>Careers</li>
-        </ul>
-        <ul>
-            <li>Sitemap</li>
-            <li>Press</li>
-            <li>Developers</li>
-            <li>Affiliates</li>
-            <li>Newsletter</li>
-        </ul>
-        <ul>
-            <li>Events</li>
-            <li>Partners</li>
-            <li>Testimonials</li>
-            <li>Resources</li>
-            <li>Community</li>
-        </ul>
-  
+        <!-- Brand Section -->
+        <div class="footer-brand">
+            <h2>BookAI</h2>
+            <p>
+                Discover books smarter with AI-powered recommendations,
+                semantic search, and personalized reading experiences.
+            </p>
+
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/books">Browse Books</a></li>
+                <li><a href="/categories">Categories</a></li>
+                <li><a href="/recommendations">AI Recommendations</a></li>
+            </ul>
+        </div>
+
+        <!-- Categories -->
+        <div class="footer-links">
+            <h3>Top Categories</h3>
+            <ul>
+                <li><a href="#">Programming</a></li>
+                <li><a href="#">AI & ML</a></li>
+                <li><a href="#">Self Development</a></li>
+                <li><a href="#">Business</a></li>
+            </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="footer-newsletter">
+            <h3>Subscribe</h3>
+            <p>Get AI-curated book updates directly to your inbox.</p>
+            
+                @if(session('success'))
+                    <div class="success-msg">{{ session('success') }}</div>
+                @endif
+                
+            <form action="{{ route('newsletter.subscribe') }}" method="POST">
+                @csrf
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+
     </div>
 
-    <div class="footer-right">
-      <!-- <img src="images/icons8-facebook-48.png" alt="FB">
-      <img src="images/icons8-instagram-48.png" alt="IG">
-      <img src="images/icons8-whatsapp-48.png" alt="WA">
-      <img src="images/icons8-twitter-48.png" alt="TW"> -->
+    <div class="footer-bottom">
+        <p>© {{ date('Y') }} BookAI. All rights reserved.</p>
+        <div class="legal-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+        </div>
     </div>
-
-  </div>
-
-  <p class="copyright">© 2025 MyWebsite. All rights reserved.</p>
 </footer>
-

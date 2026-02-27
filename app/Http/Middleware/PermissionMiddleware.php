@@ -34,7 +34,9 @@ class PermissionMiddleware
 
     private function permissionsForRole(string $role): array
     {
-        $saved = RolePermission::query()->where('role', $role)->value('permissions');
+        $saved = RolePermission::query()
+            ->whereRaw('LOWER(role) = ?', [$role])
+            ->value('permissions');
         if (is_array($saved)) {
             return $saved;
         }

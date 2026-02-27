@@ -10,6 +10,7 @@ use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Review;
+use App\Models\Setting;
 
 class ProductController extends Controller
 {
@@ -276,7 +277,7 @@ public function paperbacks()
  public function categoryBooks(Category $category)
 {
     $books = Book::where('category_id', $category->id)
-                 ->paginate(12);
+                 ->paginate(Setting::get('books_per_page', 12));
 
    return view('category-books', [
     'category' => $category->name,

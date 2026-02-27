@@ -35,7 +35,10 @@ class RolePermissionController extends Controller
     public function index()
     {
         $roles = $this->roles();
-        $savedPermissions = RolePermission::query()->pluck('permissions', 'role')->toArray();
+        $savedPermissions = [];
+        foreach (RolePermission::query()->pluck('permissions', 'role')->toArray() as $role => $permissions) {
+            $savedPermissions[strtolower((string) $role)] = is_array($permissions) ? $permissions : [];
+        }
         $defaultPermissions = $this->defaultPermissions();
 
         $rolePermissions = [];
@@ -68,10 +71,26 @@ class RolePermissionController extends Controller
                 $selectedPermissions
             )));
 
-            RolePermission::updateOrCreate(
-                ['role' => $role],
-                ['permissions' => $filteredPermissions]
-            );
+            // Keep admin immutable: full access remains guaranteed by middleware.
+            if ($role === 'admin') {
+                continue;
+            }
+
+            $rolePermission = RolePermission::query()
+                ->whereRaw('LOWER(role) = ?', [$role])
+                ->first();
+
+            if ($rolePermission) {
+                $rolePermission->update([
+                    'role' => $role,
+                    'permissions' => $filteredPermissions,
+                ]);
+            } else {
+                RolePermission::create([
+                    'role' => $role,
+                    'permissions' => $filteredPermissions,
+                ]);
+            }
         }
 
         return redirect()
@@ -85,6 +104,7 @@ class RolePermissionController extends Controller
             ->whereNotNull('role')
             ->pluck('role')
             ->filter()
+            ->map(fn ($role) => strtolower((string) $role))
             ->unique()
             ->values()
             ->all();

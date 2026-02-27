@@ -409,8 +409,6 @@ nav {
 
 .card-title {
     margin-top: 8px;
-    padding: 0 8px 10px;
-    min-height: 56px;
     font-size: 0.95rem;
     text-align: center;
     color: #e5e5e5;
@@ -1470,113 +1468,6 @@ nav {
     margin-top: 10px;
     color: #555;
     line-height: 1.6;
-}
-
-
-/* footer */
-
-/* ================= FOOTER ================= */
-
-.footer {
-    background: #0f172a; /* dark navy */
-    color: #e5e7eb;
-    padding: 60px 40px 20px;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-.footer-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 40px;
-    max-width: 1400px;
-    margin: auto;
-    flex-wrap: wrap;
-}
-
-/* LEFT GRID */
-.footer-left {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 30px;
-    flex: 1;
-}
-
-.footer-left ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-left li {
-    margin-bottom: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.footer-left li:hover {
-    color: #38bdf8; /* sky blue */
-}
-
-/* RIGHT SOCIAL ICONS */
-.footer-right {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-}
-
-.footer-right img {
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.footer-right img:hover {
-    transform: scale(1.15);
-    opacity: 0.8;
-}
-
-/* COPYRIGHT */
-.footer .copyright {
-    text-align: center;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    font-size: 13px;
-    color: #9ca3af;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 768px) {
-    .footer {
-        padding: 40px 20px;
-    }
-
-    .footer-container {
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .footer-right {
-        justify-content: center;
-    }
-
-    .footer-left {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .footer-left {
-        grid-template-columns: 1fr;
-    }
-
-    .footer-left li {
-        font-size: 15px;
-    }
 }
 
 
@@ -4268,3 +4159,5 @@ header.dark .lang-switcher {
     color: #777;
     font-size: 14px;
 }
+
+

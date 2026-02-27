@@ -5,7 +5,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Book;
 use App\Models\Review;
-use DeepCopy\f001\A;
+use App\Models\Setting;
 
 class BookController extends Controller
 {
@@ -127,7 +127,7 @@ public function show($id)
 public function categoryBooks(Category $category)
 {
     $books = Book::where('category_id', $category->id)
-                 ->paginate(12);
+                 ->paginate(Setting::get('books_per_page', 12));
 
    return view('category-books', [
     'category' => $category->name,

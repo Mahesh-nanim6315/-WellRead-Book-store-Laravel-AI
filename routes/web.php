@@ -25,10 +25,17 @@ use App\Http\Controllers\Admin\BookControllers;
 use App\Http\Controllers\Admin\RolePermissionController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ReviewControllers;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\SubscriptionController;
 
 
 
+
+/* Settings page */
+Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
+    Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings');
+    Route::post('/settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+});
 
 Route::get('/about', function () {
     return view('about');
@@ -299,7 +306,7 @@ Route::post('/library/add/{book}', [LibraryController::class, 'add'])
 
 
 
-Route::middleware(['auth','admin'])->group(function () {
+Route::middleware(['auth', 'permission:manage_notifications'])->group(function () {
     Route::get('/admin/notifications', function () {
         return view('admin.notifications.index', [
             'notifications' => Auth::user()->notifications
@@ -322,31 +329,73 @@ Route::get('/notifications/read/{id}', function ($id) {
 
 
 
-Route::middleware(['auth','admin'])
+Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
         Route::resource('reviews', \App\Http\Controllers\Admin\ReviewControllers::class)
+            ->middleware('permission:manage_reviews')
             ->only(['index','destroy']);
 
         Route::patch('reviews/{review}/approve',
             [\App\Http\Controllers\Admin\ReviewControllers::class,'approve'])
+            ->middleware('permission:manage_reviews')
             ->name('reviews.approve');
 });
 
 
-Route::middleware(['auth','role:admin,manager'])
+Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+    Route::get('/books', [BookControllers::class, 'index'])
+        ->middleware('permission:books.view')
+        ->name('books.index');
+    Route::get('/books/create', [BookControllers::class, 'create'])
+        ->middleware('permission:books.create')
+        ->name('books.create');
+    Route::post('/books', [BookControllers::class, 'store'])
+        ->middleware('permission:books.create')
+        ->name('books.store');
+    Route::get('/books/{book}', [BookControllers::class, 'show'])
+        ->middleware('permission:books.view')
+        ->name('books.show');
+    Route::get('/books/{book}/edit', [BookControllers::class, 'edit'])
+        ->middleware('permission:books.edit')
+        ->name('books.edit');
+    Route::put('/books/{book}', [BookControllers::class, 'update'])
+        ->middleware('permission:books.edit')
+        ->name('books.update');
+    Route::delete('/books/{book}', [BookControllers::class, 'destroy'])
+        ->middleware('permission:books.delete')
+        ->name('books.destroy');
 
-    Route::resource('books', BookControllers::class);
-    Route::resource('authors', AuthorControllers::class);
+    Route::get('/authors', [AuthorControllers::class, 'index'])
+        ->middleware('permission:authors.view')
+        ->name('authors.index');
+    Route::get('/authors/create', [AuthorControllers::class, 'create'])
+        ->middleware('permission:authors.create')
+        ->name('authors.create');
+    Route::post('/authors', [AuthorControllers::class, 'store'])
+        ->middleware('permission:authors.create')
+        ->name('authors.store');
+    Route::get('/authors/{author}', [AuthorControllers::class, 'show'])
+        ->middleware('permission:authors.view')
+        ->name('authors.show');
+    Route::get('/authors/{author}/edit', [AuthorControllers::class, 'edit'])
+        ->middleware('permission:authors.edit')
+        ->name('authors.edit');
+    Route::put('/authors/{author}', [AuthorControllers::class, 'update'])
+        ->middleware('permission:authors.edit')
+        ->name('authors.update');
+    Route::delete('/authors/{author}', [AuthorControllers::class, 'destroy'])
+        ->middleware('permission:authors.delete')
+        ->name('authors.destroy');
 });
 
 
-Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::get('/users', [UserController::class, 'index'])
         ->middleware('permission:users.view')
@@ -372,7 +421,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
 
 });
 
-Route::middleware(['auth', 'admin'])
+Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -384,47 +433,55 @@ Route::middleware(['auth', 'admin'])
             ->name('roles_permissions.update');
     });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::put('/orders/{id}/status', 
         [OrderControllers::class, 'updateStatus']
-    )->name('admin.orders.updateStatus');
+    )->middleware('permission:manage_orders')
+    ->name('admin.orders.updateStatus');
 
     Route::put('/orders/{id}/payment-status', 
         [OrderControllers::class, 'updatePaymentStatus']
-    )->name('admin.orders.updatePaymentStatus');
-
+    )->middleware('permission:manage_payments')
+    ->name('admin.orders.updatePaymentStatus');
 });
 
 
-Route::get('/orders/export/csv', [OrderControllers::class, 'exportCsv'])
+Route::middleware(['auth', 'permission:manage_orders'])
+    ->get('/orders/export/csv', [OrderControllers::class, 'exportCsv'])
     ->name('admin.orders.export');
 
 
-Route::middleware(['auth', 'role:admin,manager,staff'])
+Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-    Route::get('/orders', [OrderControllers::class, 'index'])->name('orders.index');
-    Route::put('/orders/{order}', [OrderControllers::class, 'update'])->name('orders.update');
+    Route::get('/orders', [OrderControllers::class, 'index'])
+        ->middleware('permission:manage_orders')
+        ->name('orders.index');
+    Route::put('/orders/{order}', [OrderControllers::class, 'update'])
+        ->middleware('permission:manage_orders')
+        ->name('orders.update');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::get('/orders/{id}', [OrderController::class, 'show'])
+        ->middleware('permission:manage_orders')
         ->name('admin.orders.show');
 
 });
 
-Route::middleware(['auth', 'role:admin,manager,staff,user'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('permission:access_dashboard')
         ->name('admin.dashboard');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/payments', [OrderControllers::class, 'payments'])
+    ->middleware('permission:manage_payments')
     ->name('admin.payments.index');
 });
-
 
 Route::get('/profile', [ProfileController::class, 'index'])
     ->middleware('auth')

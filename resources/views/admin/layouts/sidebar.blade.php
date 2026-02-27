@@ -70,11 +70,11 @@
         </li>
 
         <div style="margin-top: 200px;">
-             <li>
-                 <a href="#"> 
-                 <span class="icon">⚙️</span>
-                 <span class="text">Settings</span>
-                 </a>
+          <li class="{{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                <a href="{{ route('admin.settings') }}">
+                    <span class="icon">⚙️</span>
+                    <span class="text">Settings</span>
+                </a>
             </li>
 
              <li>

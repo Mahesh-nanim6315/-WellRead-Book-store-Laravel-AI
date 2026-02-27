@@ -31,7 +31,6 @@
     ])
 
     @include('browse')
-    @include('newsletter.index')
     @include('common.footer')
     <livewire:ai-chat />
     @livewireScripts

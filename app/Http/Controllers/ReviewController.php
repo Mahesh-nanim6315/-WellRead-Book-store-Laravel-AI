@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Book;
@@ -28,12 +29,14 @@ public function store(Request $request, Book $book)
         return back()->with('error', 'You have already reviewed this book.');
     }
 
+    $autoApprove = (bool) Setting::get('auto_approve_reviews', 0);
+
     Review::create([
         'book_id' => $book->id,
         'user_id' => Auth::id(),
         'rating'  => $request->rating,
         'comment' => $request->comment,
-        'is_approved'=> false,
+        'is_approved'=> $autoApprove,
     ]);
 
     return back()->with('success', 'Review added successfully!');

@@ -2,8 +2,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @php
+        $currentLocale = app()->getLocale();
+        $cartCount = 0;
+        if (auth()->check()) {
+            $cart = \App\Models\Cart::with('items')
+                ->where('user_id', auth()->id())
+                ->first();
+            if ($cart) {
+                $cartCount = $cart->items->sum('quantity');
+            }
+        }
+    @endphp
     <nav>
-        @php($currentLocale = app()->getLocale())
         <div class="pair">
             <img src="{{ asset('images/booklogo.png') }}" width="70px" height="40px"/>
             <form action="{{ route('products.home') }}" method="GET" class="search-form">
@@ -65,8 +76,14 @@
 
         <div class="parent">
             <div class="child">
-                <a href="{{ route('cart.view') }}">
-                    <img src="{{ asset('images/shopping-cart.png') }}" width="45" height="45" class="cart-icon">
+                <a href="{{ route('cart.view') }}" class="cart-link">
+                    <div class="cart-wrapper">
+                     
+                        <img src="{{ asset('images/shopping-cart.png') }}" width="45" height="45" class="cart-icon">
+                        @if($cartCount > 0)
+                            <span class="cart-count-badge" style="background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: absolute; top: 7px; right: 93px;">{{ $cartCount }}</span>
+                        @endif
+                    </div>
                 </a>
             </div>
 

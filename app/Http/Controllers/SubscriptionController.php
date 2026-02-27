@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Setting;
 
 class SubscriptionController extends Controller
 {
@@ -46,7 +47,10 @@ class SubscriptionController extends Controller
             ],
         ];
 
-        return view('subscriptions.index', compact('plans'));
+        $subscriptionsEnabled = (bool) Setting::get('subscriptions_enabled', 1);
+        $freeTrialDays = (int) Setting::get('free_trial_days', 7);
+
+        return view('subscriptions.index', compact('plans', 'subscriptionsEnabled', 'freeTrialDays'));
     }
 
     public function checkout(Request $request)
@@ -59,6 +63,11 @@ class SubscriptionController extends Controller
         $user = Auth::user();
         $plan = $data['plan'];
         $billing = $data['billing_cycle'];
+
+        // If subscriptions are disabled, block any non-free plan changes.
+        if (! (bool) Setting::get('subscriptions_enabled', 1) && $plan !== 'free') {
+            abort(403, 'Subscriptions are currently disabled.');
+        }
 
         if ($user->plan === $plan && $user->billing_cycle === $billing && ! $user->subscription('default')?->onGracePeriod()) {
             return back()->with('error', 'You are already on this plan.');
@@ -80,6 +89,8 @@ class SubscriptionController extends Controller
             return back()->with('error', 'Invalid subscription configuration.');
         }
 
+        $trialDays = (int) Setting::get('free_trial_days', 7);
+
         if ($user->subscribed('default')) {
             if ($user->subscription('default')->onGracePeriod()) {
                 $user->subscription('default')->resume();
@@ -95,7 +106,7 @@ class SubscriptionController extends Controller
         $request->session()->put('pending_subscription_billing', $billing);
 
         return $user->newSubscription('default', $priceId)
-            ->trialDays(7)
+            ->trialDays($trialDays)
             ->checkout([
                 'success_url' => route('subscription.success'),
                 'cancel_url' => route('plans.index'),

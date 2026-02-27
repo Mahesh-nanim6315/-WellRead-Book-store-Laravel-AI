@@ -20,6 +20,7 @@ class Kernel extends HttpKernel
 
             // ✅ Language middleware
             \App\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\CheckMaintenanceMode::class,
         ],
 
         'api' => [
