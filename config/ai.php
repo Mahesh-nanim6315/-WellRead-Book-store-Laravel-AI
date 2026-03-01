@@ -13,4 +13,10 @@ return [
         'ollama' => \App\Services\OllamaService::class,
         'huggingface' => \App\Services\HuggingFaceService::class,
     ],
+
+    'docs' => [
+        'supported_extensions' => ['pdf', 'docx', 'txt', 'md'],
+        'chunk_size' => (int) env('AI_DOC_CHUNK_SIZE', 700),
+        'chunk_overlap' => (int) env('AI_DOC_CHUNK_OVERLAP', 120),
+    ],
 ];

@@ -14,12 +14,13 @@ class RagService
     public function __construct(
         private readonly QueryIntentParser $parser,
         private readonly BookRetriever $retriever,
+        private readonly DocumentVectorSearchService $documentSearch,
         private readonly AgentPlannerExecutor $planner,
         private readonly AnswerComposer $composer,
     ) {
     }
 
-    public function chat(
+    public function chat( 
         string $userMessage,
         array $history = [],
         string $provider = 'ollama'
@@ -104,13 +105,15 @@ class RagService
         $conversation = $this->composer->buildConversationContext($history);
         $constraints = $this->parser->parseHardConstraints($userMessage);
         $topBooks = $this->retriever->retrieveRelevantBooks($userMessage, $embeddingLlm, $provider, 3);
+        $topDocChunks = $this->retrieveRelevantDocumentChunks($userMessage, $embeddingLlm, $provider, 4);
 
         $result = $this->planner->execute(
             $llm,
             $userMessage,
             $conversation,
             $topBooks,
-            $constraints
+            $constraints,
+            $topDocChunks
         );
 
         if (! isset($result['source'])) {
@@ -118,6 +121,30 @@ class RagService
         }
 
         return $result;
+    }
+
+    private function retrieveRelevantDocumentChunks(
+        string $userMessage,
+        LLMServiceInterface $embeddingLlm,
+        string $provider,
+        int $limit = 4
+    ): array {
+        try {
+            $queryEmbedding = $embeddingLlm->embedding($userMessage);
+        } catch (\Throwable $e) {
+            return [];
+        }
+
+        if (empty($queryEmbedding) || count($queryEmbedding) < 10) {
+            return [];
+        }
+
+        $rows = $this->documentSearch->search($queryEmbedding, $limit, 0.25, $provider);
+        if (empty($rows)) {
+            $rows = $this->documentSearch->search($queryEmbedding, $limit, 0.25, null);
+        }
+
+        return $rows;
     }
 
     private function resolveModel(string $provider): LLMServiceInterface

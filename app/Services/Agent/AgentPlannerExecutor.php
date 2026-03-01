@@ -22,7 +22,8 @@ class AgentPlannerExecutor
         string $userMessage,
         string $conversation,
         array $topBooks,
-        array $constraints
+        array $constraints,
+        array $topDocChunks = []
     ): array {
         $workingBookIds = $this->retriever->extractIdsFromRows($topBooks);
         $observations = [];
@@ -62,6 +63,7 @@ class AgentPlannerExecutor
                 $conversation,
                 $filteredRows,
                 $observations,
+                $topDocChunks,
                 $usedFallback
             );
 
@@ -107,6 +109,7 @@ class AgentPlannerExecutor
                         $conversation,
                         $filteredRows,
                         $observations,
+                        $topDocChunks,
                         $usedFallback
                     );
                     $source = $usedFallback ? 'catalog_fallback' : 'llm';

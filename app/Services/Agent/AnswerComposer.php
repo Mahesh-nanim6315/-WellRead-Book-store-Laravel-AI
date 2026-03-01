@@ -83,10 +83,12 @@ class AnswerComposer
         string $conversation,
         array $rows,
         array $observations,
+        array $documentChunks = [],
         ?bool &$usedFallback = null
     ): string {
         $usedFallback = false;
         $bookContext = $this->buildBookContext($rows);
+        $docContext = $this->buildDocumentContext($documentChunks);
         $obsJson = json_encode($this->compactObservations($observations), JSON_PRETTY_PRINT) ?: '[]';
 
         $prompt = <<<PROMPT
@@ -102,6 +104,9 @@ User query:
 Catalog candidates:
 {$bookContext}
 
+Document evidence chunks:
+{$docContext}
+
 Tool observations:
 {$obsJson}
 
@@ -109,6 +114,7 @@ Instructions:
 - First detect intent from the user query.
 - If the user asks for book recommendations/search, recommend up to 3 catalog books and do not invent titles.
 - If the user asks a general question (study tips, habits, motivation, explanations), answer directly and do NOT force book recommendations.
+- If document evidence is relevant, cite it as [Document Title, page N] after the related sentence.
 - If the user requests a specific format/length (for example: "2 lines", "3 bullet points"), follow it exactly.
 - Do not say you cannot browse or check physical books unless the user explicitly asks for real-time store stock verification.
 - Mention stock/price constraints only when relevant.
@@ -199,5 +205,39 @@ PROMPT;
         }
 
         return array_slice($rows, -6);
+    }
+
+    private function buildDocumentContext(array $chunks): string
+    {
+        if (empty($chunks)) {
+            return 'No document evidence.';
+        }
+
+        $lines = [];
+        foreach (array_slice($chunks, 0, 6) as $row) {
+            $chunk = $row['chunk'] ?? null;
+            if ($chunk === null || ! isset($chunk->chunk_text)) {
+                continue;
+            }
+
+            $snippet = trim((string) $chunk->chunk_text);
+            if (strlen($snippet) > 240) {
+                $snippet = substr($snippet, 0, 237) . '...';
+            }
+
+            $title = $chunk->document->title ?? 'Unknown Document';
+            $page = $chunk->page_no ? 'page ' . $chunk->page_no : 'page n/a';
+            $score = (float) ($row['score'] ?? 0.0);
+
+            $lines[] = sprintf(
+                '- [%s, %s, score=%.4f] %s',
+                $title,
+                $page,
+                $score,
+                $snippet
+            );
+        }
+
+        return empty($lines) ? 'No document evidence.' : implode("\n", $lines);
     }
 }
