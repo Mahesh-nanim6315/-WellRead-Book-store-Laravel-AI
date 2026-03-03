@@ -125,6 +125,9 @@ PROMPT;
             return $llm->generate($prompt);
         } catch (Throwable $e) {
             $usedFallback = true;
+            if (! $this->isCatalogRequest($userMessage) && ! empty($documentChunks)) {
+                return $this->buildDocumentFallbackAnswer($documentChunks);
+            }
             return $this->buildAgentFallbackAnswer($rows, $observations);
         }
     }
@@ -239,5 +242,47 @@ PROMPT;
         }
 
         return empty($lines) ? 'No document evidence.' : implode("\n", $lines);
+    }
+
+    private function isCatalogRequest(string $message): bool
+    {
+        return preg_match(
+            '/\b(book|books|novel|catalog|author|price|cost|stock|genre|category|ebook|paperback|audiobook)\b/i',
+            $message
+        ) === 1;
+    }
+
+    private function buildDocumentFallbackAnswer(array $documentChunks): string
+    {
+        $lines = [
+            'I could not complete model generation, but I found relevant document evidence:',
+        ];
+
+        $count = 0;
+        foreach (array_slice($documentChunks, 0, 3) as $row) {
+            $chunk = $row['chunk'] ?? null;
+            if ($chunk === null || ! isset($chunk->chunk_text)) {
+                continue;
+            }
+
+            $snippet = trim((string) $chunk->chunk_text);
+            if ($snippet === '') {
+                continue;
+            }
+            if (strlen($snippet) > 220) {
+                $snippet = substr($snippet, 0, 217) . '...';
+            }
+
+            $title = $chunk->document->title ?? 'Unknown Document';
+            $page = $chunk->page_no ? 'page ' . $chunk->page_no : 'page n/a';
+            $lines[] = sprintf('- %s [%s, %s]', $snippet, $title, $page);
+            $count++;
+        }
+
+        if ($count === 0) {
+            return 'I found document chunks, but could not build a safe fallback answer from them. Please retry once.';
+        }
+
+        return implode("\n", $lines);
     }
 }

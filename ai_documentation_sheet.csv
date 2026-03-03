@@ -1,0 +1,38 @@
+﻿File,Category,Purpose,Primary Methods or Keys,Used By / Trigger,Notes
+config/ai.php,Config,Central AI runtime config,"provider, embedding_provider, timeouts, max_agent_steps, docs.chunk_size/docs.chunk_overlap",Service container + AI services,Controls provider selection and agent depth
+config/services.php,Config,Provider credentials and model names,"openai.*, gemini.*, huggingface.*, ollama.*",LLM provider services,Backed by .env vars
+app/Providers/AppServiceProvider.php,Container,Resolves active LLM implementation,"bind(LLMServiceInterface)",Any service type-hinting LLMServiceInterface,Uses config(ai.provider)
+app/Services/Contracts/LLMServiceInterface.php,Contract,Standard LLM API,"generate(string), embedding(string)",All provider services + orchestration,Allows provider swapping
+app/Services/OpenAIService.php,Provider,OpenAI chat + embeddings,"__construct, generate, embedding",RagService/commands via resolved provider,Calls /v1/chat/completions and /v1/embeddings
+app/Services/GeminiService.php,Provider,Google Gemini chat + embeddings,"__construct, generate, embedding",RagService/commands via resolved provider,Calls generativelanguage.googleapis.com
+app/Services/HuggingFaceService.php,Provider,HuggingFace inference chat + embeddings,"__construct, generate, embedding",RagService/commands via resolved provider,Parses varied HF embedding response shapes
+app/Services/OllamaService.php,Provider,Local Ollama generation + embeddings,"__construct, generate, embedding",RagService/commands via resolved provider,Default local provider in env.example
+app/Services/RagService.php,Orchestrator,Main AI chat pipeline,"chat, resolveModel, retrieveRelevantDocumentChunks",Livewire AiChat,Combines rules + vector retrieval + agent planner
+app/Services/Agent/QueryIntentParser.php,Agent,NLP-style intent and constraint parsing,"isGreeting, parseHardConstraints, parseListIntent, parseAuthorBooksIntent",RagService + AgentPlannerExecutor,Extracts language/price/mood/currency
+app/Services/Agent/BookRetriever.php,Retrieval,Book retrieval and constraint filtering,"retrieveRelevantBooks, retrieveByTopic, enforceRowsAgainstConstraints",RagService + AgentPlannerExecutor,Embedding search with keyword fallback
+app/Services/BookVectorSearchService.php,Vector Search,Cosine similarity over book embeddings,"search, cosineSimilarity",BookRetriever,Filters by embedding_provider when requested
+app/Services/BookAgentToolService.php,Tools,Agent tool definitions + execution,"getToolDefinitions, execute, searchBooks/filterByMood/filterByPrice/checkStock",AgentPlannerExecutor,Produces structured tool outputs for reasoning
+app/Services/Agent/AgentPlannerExecutor.php,Planner,ReAct-style loop for tool calls and final answer,"execute, decideNextAction, applyHardConstraintSequence",RagService,Returns source tags like llm/catalog_fallback
+app/Services/Agent/AnswerComposer.php,Response,Prompt assembly + fallback responses,"buildAgentFinalAnswer, buildBookContext, buildDocumentContext",AgentPlannerExecutor + RagService,Supports document citations in generated answer
+app/Services/DocumentExtractorService.php,Ingestion,Extracts text from pdf/docx/txt/md,"extract, extractPdf, extractDocx, extractPlainText",DocumentIngestionService,Requires smalot/pdfparser for PDFs
+app/Services/DocumentIngestionService.php,Ingestion,Chunks and embeds documents into DB,"ingest, chunkText, resolveModel",IngestDocuments command,Stores Document + DocumentChunk rows
+app/Services/DocumentVectorSearchService.php,Vector Search,Cosine search on document chunks,"search, cosineSimilarity",RagService,Returns chunk + score pairs
+app/Livewire/AiChat.php,UI Backend,Chat session lifecycle + AI call handling,"mount, ask, newChat, resolveActiveSession",Livewire view events,Persists user/assistant messages
+resources/views/livewire/ai-chat.blade.php,UI,Chat widget markup and interactions,"wire:model message, wire:click ask/newChat",Rendered in welcome/app layout,Model picker supports gemini/ollama/huggingface
+resources/views/welcome.blade.php,UI Host,Mounts chat widget,"<livewire:ai-chat />",Public home page,Entry point for guest/home chat
+resources/views/layouts/app.blade.php,UI Host,Mounts chat widget in app layout,"<livewire:ai-chat />",Authenticated app pages,Ensures chat availability across app screens
+app/Models/Book.php,Model,Catalog data consumed by AI,"author/category/genre relations, embedding field",Retriever/tools/embeddings command,Stores per-book embedding JSON
+app/Models/Document.php,Model,Document metadata container,"chunks relation",Document ingestion and retrieval,Source file/title tracking
+app/Models/DocumentChunk.php,Model,Vectorized chunk storage,"document relation, embedding_provider",Document vector search + AnswerComposer context,Includes chunk_index/page_no
+app/Models/ChatSession.php,Model,Conversation session grouping,"user/messages relations",AiChat component,Session pinning via session(ai_chat_session_id)
+app/Models/ChatMessage.php,Model,Message persistence for turns,"role,text,source,meta casts",AiChat component,Stores model/source metadata for assistant replies
+database/migrations/2026_02_17_045611_add_embedding_to_books_table.php,Migration,Adds book embeddings column,"up/down",Embedding generation workflow,longText embedding nullable
+database/migrations/2026_02_20_100141_add_embedding_provider_to_books_table.php,Migration,Adds provider tag for book vectors,"up/down",Book vector filtering,Supports multi-provider embeddings
+database/migrations/2026_02_26_000001_create_chat_sessions_table.php,Migration,Creates chat_sessions table,"up/down",AiChat persistence,Indexed by user_id + updated_at
+database/migrations/2026_02_26_000002_create_chat_messages_table.php,Migration,Creates chat_messages table,"up/down",AiChat persistence,Stores source + JSON meta
+database/migrations/2026_03_01_000001_create_documents_table.php,Migration,Creates documents table,"up/down",Document ingestion,Tracks title/file_path/source_type
+database/migrations/2026_03_01_000002_create_document_chunks_table.php,Migration,Creates document_chunks table,"up/down",Document RAG retrieval,Indexes document_id/chunk_index/provider
+app/Console/Commands/GenerateBookEmbeddings.php,Command,Generates catalog embeddings,"books:generate-embeddings, --provider, --force",Manual/ops execution,Builds rich embedding text from book metadata
+app/Console/Commands/IngestDocuments.php,Command,Ingests docs into chunk embeddings,"docs:ingest {path} --provider --source",Manual/ops execution,Supports file or directory recursion
+.env.example,Env Template,AI env variable template,"AI_*, OPENAI_*, GEMINI_*, HUGGINGFACE_*, OLLAMA_*",Deployment/setup reference,Do not store real secrets here
+composer.json,Dependency,AI-related package declarations,"livewire/livewire, smalot/pdfparser",Build/runtime dependency resolution,PDF extraction and chat UI dependency

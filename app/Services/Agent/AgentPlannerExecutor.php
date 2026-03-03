@@ -49,11 +49,13 @@ class AgentPlannerExecutor
             );
 
             if (empty($filteredRows)) {
-                return [
-                    'answer' => $this->composer->buildNoConstraintMatchAnswer($constraints),
-                    'books' => [],
-                    'source' => 'catalog_constraints',
-                ];
+                if ($this->parser->hasHardConstraints($constraints)) {
+                    return [
+                        'answer' => $this->composer->buildNoConstraintMatchAnswer($constraints),
+                        'books' => [],
+                        'source' => 'catalog_constraints',
+                    ];
+                }
             }
 
             $usedFallback = false;
@@ -70,7 +72,9 @@ class AgentPlannerExecutor
             return [
                 'answer' => $answer,
                 'books' => $filteredRows,
-                'source' => $usedFallback ? 'catalog_fallback' : 'llm',
+                'source' => $usedFallback
+                    ? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback')
+                    : 'llm',
             ];
         }
 
@@ -92,11 +96,13 @@ class AgentPlannerExecutor
                 );
 
                 if (empty($filteredRows)) {
-                    return [
-                        'answer' => $this->composer->buildNoConstraintMatchAnswer($constraints),
-                        'books' => [],
-                        'source' => 'catalog_constraints',
-                    ];
+                    if ($this->parser->hasHardConstraints($constraints)) {
+                        return [
+                            'answer' => $this->composer->buildNoConstraintMatchAnswer($constraints),
+                            'books' => [],
+                            'source' => 'catalog_constraints',
+                        ];
+                    }
                 }
 
                 $answer = trim((string) ($decision['final_answer'] ?? ''));
@@ -112,7 +118,9 @@ class AgentPlannerExecutor
                         $topDocChunks,
                         $usedFallback
                     );
-                    $source = $usedFallback ? 'catalog_fallback' : 'llm';
+                    $source = $usedFallback
+                        ? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback')
+                        : 'llm';
                 }
 
                 return [
@@ -161,10 +169,31 @@ class AgentPlannerExecutor
         );
 
         if (empty($finalRows)) {
+            if ($this->parser->hasHardConstraints($constraints)) {
+                return [
+                    'answer' => $this->composer->buildNoConstraintMatchAnswer($constraints),
+                    'books' => [],
+                    'source' => 'catalog_constraints',
+                ];
+            }
+
+            $usedFallback = false;
+            $answer = $this->composer->buildAgentFinalAnswer(
+                $llm,
+                $userMessage,
+                $conversation,
+                [],
+                $observations,
+                $topDocChunks,
+                $usedFallback
+            );
+
             return [
-                'answer' => $this->composer->buildNoConstraintMatchAnswer($constraints),
+                'answer' => $answer,
                 'books' => [],
-                'source' => 'catalog_constraints',
+                'source' => $usedFallback
+                    ? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback')
+                    : 'llm',
             ];
         }
 

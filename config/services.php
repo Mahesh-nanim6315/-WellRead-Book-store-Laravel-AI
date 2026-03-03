@@ -68,6 +68,7 @@ return [
     'ollama' => [
     'base_url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
     'model' => env('OLLAMA_MODEL', 'mistral'),
+    'embedding_model' => env('OLLAMA_EMBEDDING_MODEL', 'nomic-embed-text'),
     'num_predict' => (int) env('OLLAMA_NUM_PREDICT', 120),
 ],
 
