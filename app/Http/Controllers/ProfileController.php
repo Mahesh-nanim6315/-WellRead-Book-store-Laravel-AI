@@ -6,10 +6,12 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -23,13 +25,10 @@ public function updateAvatar(Request $request)
     $user = Auth::user();
 
     // Delete old avatar if exists
-    if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-        Storage::disk('public')->delete($user->avatar);
-    }
+    $this->deleteProfileImage($user->avatar);
 
-    // Store new avatar
-    $path = $request->file('avatar')
-        ->store('avatars', 'public');
+    // Store new avatar in public/uploads (no storage link required)
+    $path = $this->storePublicImage($request->file('avatar'), 'avatars');
 
     $user->update([
         'avatar' => $path
@@ -111,19 +110,53 @@ public function updateCover(Request $request)
     $user = Auth::user();
 
     // Delete old cover
-    if ($user->cover && Storage::disk('public')->exists($user->cover)) {
-        Storage::disk('public')->delete($user->cover);
-    }
+    $this->deleteProfileImage($user->cover);
 
-    // Store new cover
-    $path = $request->file('cover')
-        ->store('covers', 'public');
+    // Store new cover in public/uploads (no storage link required)
+    $path = $this->storePublicImage($request->file('cover'), 'covers');
 
     $user->update([
         'cover' => $path
     ]);
 
     return back()->with('success', 'Cover updated successfully.');
+}
+
+private function storePublicImage($file, string $folder): string
+{
+    $extension = $file->getClientOriginalExtension() ?: 'jpg';
+    $filename = Str::uuid()->toString() . '.' . $extension;
+    $directory = public_path('uploads/' . $folder);
+
+    if (! File::exists($directory)) {
+        File::makeDirectory($directory, 0755, true);
+    }
+
+    $file->move($directory, $filename);
+
+    return 'uploads/' . $folder . '/' . $filename;
+}
+
+private function deleteProfileImage(?string $path): void
+{
+    if (! $path) {
+        return;
+    }
+
+    $normalized = ltrim($path, '/');
+
+    if (str_starts_with($normalized, 'storage/')) {
+        $relative = substr($normalized, strlen('storage/'));
+        if (Storage::disk('public')->exists($relative)) {
+            Storage::disk('public')->delete($relative);
+        }
+        return;
+    }
+
+    $publicFile = public_path($normalized);
+    if (File::exists($publicFile)) {
+        File::delete($publicFile);
+    }
 }
 
 

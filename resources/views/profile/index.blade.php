@@ -14,9 +14,7 @@
                id="coverInput" 
                hidden>
 
-        <img src="{{ $user->cover 
-                ? asset('storage/'.$user->cover) 
-                : asset('images/default-cover.jpg') }}"
+        <img src="{{ $user->cover_url }}?v={{ $user->updated_at?->timestamp ?? time() }}"
              class="cover-img">
 
         <button type="button" 
@@ -28,35 +26,34 @@
 
 </div>
 
-
 <form action="{{ route('profile.avatar') }}" 
       method="POST" 
-      enctype="multipart/form-data">
+      enctype="multipart/form-data"
+      class="profile-avatar">
     @csrf
 
     <div class="avatar-upload">
         <input type="file" name="avatar" id="avatarInput" hidden>
         
-        <img src="{{ $user->avatar 
-            ? asset('storage/' . $user->avatar) 
-            : asset('images/default-avatar.png') }}" 
+        <img src="{{ $user->avatar_url }}?v={{ $user->updated_at?->timestamp ?? time() }}"
             id="avatarPreview"
             class="avatar-img">
 
-        <button type="button" onclick="document.getElementById('avatarInput').click()">
+       <button type="button" onclick="document.getElementById('avatarInput').click()">
             Change Avatar
         </button> 
+
+        <h2 class="profile-name profile-name--avatar">{{ $user->name }}</h2>
+
     </div>
-            <h2 style="position: absolute; top: 330px; left: 655px; bottom: 30px;">{{ $user->name }}</h2>
+    
 </form>
 
+<div class="profile-meta">
+    <div class="profile-identity">
+        <p class="profile-email">{{ $user->email }}</p>
 
-   <div style="text-align: start; position: absolute; bottom: 20px; left: 40px; top: 300px;">
-        <div style="font-weight: 600; font-size: 16px;">
-            <p>{{ $user->email }}</p>
-        </div>
-
-        <div class="badges-container" style="display: flex; gap: 10px;">
+        <div class="badges-container">
             <span class="role-badges">
                 {{ ucfirst($user->role) }}
             </span>
@@ -71,12 +68,11 @@
                 </span>
             @endif
         </div>
-    
     </div>
 
-
-    <div style="position: absolute; top: 310px; right: 180px; text-align: right;">
-        <h4>Profile Completion</h4>
+    <div class="profile-right">
+        <div class="profile-progress">
+            <h4>Profile Completion</h4>
 
             <div class="progress-bars">
                 <div class="progress-fills" 
@@ -84,14 +80,16 @@
                 </div>
             </div> 
 
-        <span>{{ $completion }}% Completed</span>
-        
+            <span>{{ $completion }}% Completed</span>
+        </div>
+
+        <div class="profile-actions">
+            <button class="edit-btns" onclick="openModal()">
+                Edit Profile
+            </button>
+        </div>
     </div>
-    <div style="position: absolute; top: 310px; right: 40px; text-align: right;">
-        <button class="edit-btns" onclick="openModal()">
-            Edit Profile
-        </button>
-    </div>
+</div>
 
 </div>
 

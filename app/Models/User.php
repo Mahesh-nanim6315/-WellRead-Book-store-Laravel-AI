@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -107,6 +108,46 @@ public function canAccessBook(Book $book): bool
 public function chatSessions()
 {
     return $this->hasMany(ChatSession::class);
+}
+
+public function getAvatarUrlAttribute(): string
+{
+    return $this->resolveImageUrl($this->avatar, 'images/default-avatar.png');
+}
+
+public function getCoverUrlAttribute(): string
+{
+    return $this->resolveImageUrl($this->cover, 'images/default-cover.jpg');
+}
+
+private function resolveImageUrl(?string $path, string $fallback): string
+{
+    if (! $path) {
+        return asset($fallback);
+    }
+
+    if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        return $path;
+    }
+
+    $normalized = ltrim($path, '/');
+    if (str_starts_with($normalized, 'uploads/')) {
+        if (file_exists(public_path($normalized))) {
+            return asset($normalized);
+        }
+        return asset($fallback);
+    }
+
+    if (str_starts_with($normalized, 'storage/')) {
+        $normalized = substr($normalized, strlen('storage/'));
+    }
+
+    $publicFile = public_path('storage/' . $normalized);
+    if (Storage::disk('public')->exists($normalized) && file_exists($publicFile)) {
+        return asset('storage/' . $normalized);
+    }
+
+    return asset($fallback);
 }
 
 
