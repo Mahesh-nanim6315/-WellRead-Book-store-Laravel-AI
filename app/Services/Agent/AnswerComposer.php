@@ -84,9 +84,11 @@ class AnswerComposer
         array $rows,
         array $observations,
         array $documentChunks = [],
-        ?bool &$usedFallback = null
+        ?bool &$usedFallback = null,
+        ?string &$fallbackSource = null
     ): string {
         $usedFallback = false;
+        $fallbackSource = null;
         $bookContext = $this->buildBookContext($rows);
         $docContext = $this->buildDocumentContext($documentChunks);
         $obsJson = json_encode($this->compactObservations($observations), JSON_PRETTY_PRINT) ?: '[]';
@@ -124,10 +126,20 @@ PROMPT;
         try {
             return $llm->generate($prompt);
         } catch (Throwable $e) {
+            \Log::error('LLM generation failed', [
+                'error' => $e->getMessage(),
+                'provider' => get_class($llm),
+            ]);
             $usedFallback = true;
             if (! $this->isCatalogRequest($userMessage) && ! empty($documentChunks)) {
+                $fallbackSource = 'document_fallback';
                 return $this->buildDocumentFallbackAnswer($documentChunks);
             }
+            if (! $this->isCatalogRequest($userMessage)) {
+                $fallbackSource = 'llm_unavailable';
+                return 'I am having trouble reaching the language model right now. Please try again in a moment.';
+            }
+            $fallbackSource = 'catalog_fallback';
             return $this->buildAgentFallbackAnswer($rows, $observations);
         }
     }

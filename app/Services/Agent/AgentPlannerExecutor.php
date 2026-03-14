@@ -59,6 +59,7 @@ class AgentPlannerExecutor
             }
 
             $usedFallback = false;
+            $fallbackSource = null;
             $answer = $this->composer->buildAgentFinalAnswer(
                 $llm,
                 $userMessage,
@@ -66,14 +67,15 @@ class AgentPlannerExecutor
                 $filteredRows,
                 $observations,
                 $topDocChunks,
-                $usedFallback
+                $usedFallback,
+                $fallbackSource
             );
 
             return [
                 'answer' => $answer,
                 'books' => $filteredRows,
                 'source' => $usedFallback
-                    ? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback')
+                    ? ($fallbackSource ?? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback'))
                     : 'llm',
             ];
         }
@@ -109,6 +111,7 @@ class AgentPlannerExecutor
                 $source = 'llm';
                 if ($answer === '') {
                     $usedFallback = false;
+                    $fallbackSource = null;
                     $answer = $this->composer->buildAgentFinalAnswer(
                         $llm,
                         $userMessage,
@@ -116,10 +119,11 @@ class AgentPlannerExecutor
                         $filteredRows,
                         $observations,
                         $topDocChunks,
-                        $usedFallback
+                        $usedFallback,
+                        $fallbackSource
                     );
                     $source = $usedFallback
-                        ? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback')
+                        ? ($fallbackSource ?? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback'))
                         : 'llm';
                 }
 
@@ -178,6 +182,7 @@ class AgentPlannerExecutor
             }
 
             $usedFallback = false;
+            $fallbackSource = null;
             $answer = $this->composer->buildAgentFinalAnswer(
                 $llm,
                 $userMessage,
@@ -185,14 +190,15 @@ class AgentPlannerExecutor
                 [],
                 $observations,
                 $topDocChunks,
-                $usedFallback
+                $usedFallback,
+                $fallbackSource
             );
 
             return [
                 'answer' => $answer,
                 'books' => [],
                 'source' => $usedFallback
-                    ? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback')
+                    ? ($fallbackSource ?? (str_starts_with($answer, 'I could not complete model generation') ? 'document_fallback' : 'catalog_fallback'))
                     : 'llm',
             ];
         }

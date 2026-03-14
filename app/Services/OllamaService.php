@@ -16,7 +16,7 @@ class OllamaService implements LLMServiceInterface
     public function __construct()
     {
         $this->baseUrl = (string) config('services.ollama.base_url', 'http://localhost:11434');
-        $this->model = (string) config('services.ollama.model', 'mistral');
+        $this->model = (string) config('services.ollama.model', 'llama3');
         $this->embeddingModel = (string) config('services.ollama.embedding_model', 'nomic-embed-text');
         $this->numPredict = (int) config('services.ollama.num_predict', 120);
     }
